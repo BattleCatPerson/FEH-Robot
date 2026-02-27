@@ -243,7 +243,7 @@ void move_forward(int percent, int counts) // using encoders
     // keep running motors
     while ((left_encoder.Counts() + right_encoder.Counts()) / 2. < counts)
         ;
-
+    // yo what's up man
     // Turn off motors
     right_motor.Stop();
     left_motor.Stop();
