@@ -13,7 +13,7 @@
 // #define COUNTS_PER_DEGREE 2.48
 
 // // Defines for pulsing the robot
-// #define PULSE_TIME 0.5
+// #define PULSE_TIME 0.25
 // #define PULSE_POWER 25
 
 // // Define for the motor power
@@ -131,12 +131,12 @@
 //             if (pose->x < x_coordinate + 1)
 //             {
 //                 // Pulse the motors for a short duration in the correct direction
-//                 pulse_forward(-power, PULSE_TIME);
+//                 pulse_forward(power, PULSE_TIME);
 //             }
 //             else if (pose->x > x_coordinate - 1)
 //             {
 //                 // Pulse the motors for a short duration in the correct direction
-//                 pulse_forward(power, PULSE_TIME);
+//                 pulse_forward(-power, PULSE_TIME);
 //             }
 //             Sleep(RCS_WAIT_TIME_IN_SEC);
 
@@ -162,7 +162,7 @@
 //     // Check if receiving proper RCS coordinates and whether the robot is within an acceptable range
 //     for (int i = 0; i < 10; i++)
 //     {
-//         while (pose->y >= 0 && (pose->y < y_coordinate - 1 || pose->y > y_coordinate + 1))
+//         if (pose->y >= 0 && (pose->y < y_coordinate - 1 || pose->y > y_coordinate + 1))
 //         {
 //             if (pose->y < y_coordinate + 1)
 //             {
@@ -252,7 +252,7 @@
 //     B_C_counts = COUNTS_PER_INCH * 6;
 //     C_D_counts = COUNTS_PER_INCH * 6;
 
-//     turn_90_counts = COUNTS_PER_DEGREE * 45;
+//     turn_90_counts = COUNTS_PER_DEGREE * 90;
 
 //     // A --> B
 //     move_forward(POWER, B_C_counts);
