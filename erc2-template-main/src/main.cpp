@@ -102,7 +102,7 @@ void ERCMain()
     float light_degrees = 10;
 
     // read light
-    Sleep(3.0);
+    Sleep(3.0); // yoooo
     while (cds.Value() > no_light)
     {
     }
