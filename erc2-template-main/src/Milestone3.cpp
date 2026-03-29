@@ -90,22 +90,35 @@ void turn_clockwise(int percent, int counts)
 }
 void ERCMain()
 {
-    int left_motor_percent = 35;
-    int right_motor_percent = 40; // Input power level here
+    int left_motor_percent = 30;
+    int right_motor_percent = 32; // Input power level here
     float no_light = 2.75;
-    float up_ramp_inches = 42;
+    float up_ramp_inches = 38;
     float light_degrees = 10;
-    float push_window = 10;
+    float to_window = 22;
+    float push_window = 20;
+    int fuck_up_divider = 2;
+    float final_button = 2;
+    float final_button_back = 1;
     // read light
-    Sleep(3.0);
+    // Sleep(3.0); // remember to double values when we fix this
     while (cds.Value() > no_light)
     {
     }
     // turn right 45 degrees 54
-    turn_clockwise(25, COUNTS_PER_DEGREE * 48);
+    move_backward(left_motor_percent, right_motor_percent, final_button * COUNTS_PER_INCH / fuck_up_divider);
+    move_forward(left_motor_percent, right_motor_percent, final_button_back * COUNTS_PER_INCH / fuck_up_divider);
+    
+    turn_clockwise(25, COUNTS_PER_DEGREE * 51 / fuck_up_divider);
     // drive up ramp
-    move_forward(left_motor_percent, right_motor_percent, up_ramp_inches * COUNTS_PER_INCH);
+    move_forward(left_motor_percent, right_motor_percent, up_ramp_inches * COUNTS_PER_INCH / fuck_up_divider);
     // turn around
-    turn_counterclockwise(25, COUNTS_PER_DEGREE * 180); // 97
-    move_backward(left_motor_percent, right_motor_percent, push_window * COUNTS_PER_INCH);
+    turn_clockwise(25, COUNTS_PER_DEGREE * 90 / fuck_up_divider); // 97
+    // straighten
+    move_forward(left_motor_percent, right_motor_percent, 3.5 * COUNTS_PER_INCH / fuck_up_divider);
+    Sleep(1.0);
+    move_backward(left_motor_percent, right_motor_percent, 0.5 * COUNTS_PER_INCH / fuck_up_divider);
+    move_backward(left_motor_percent, right_motor_percent, to_window * COUNTS_PER_INCH / fuck_up_divider);
+    Sleep(1.0);
+    move_backward(left_motor_percent - 5, right_motor_percent, push_window * COUNTS_PER_INCH / fuck_up_divider);
 }
