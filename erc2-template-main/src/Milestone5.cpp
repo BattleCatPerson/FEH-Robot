@@ -97,34 +97,34 @@ int turn_min = 500;
 
 void PressButton()
 {
-    move_backward(left_motor_percent, right_motor_percent, final_button * COUNTS_PER_INCH / fuck_up_divider);
-    move_forward(left_motor_percent, right_motor_percent, final_button_back * COUNTS_PER_INCH / fuck_up_divider);
+    move_backward(left_motor_percent, right_motor_percent, final_button * COUNTS_PER_INCH);
+    move_forward(left_motor_percent, right_motor_percent, final_button_back * COUNTS_PER_INCH);
     // turn_clockwise(25, COUNTS_PER_DEGREE * 45 / fuck_up_divider);
 }
 void ToBin()
 {
-    turn_counterclockwise(15, COUNTS_PER_DEGREE * 45);
-    move_forward(left_motor_percent, right_motor_percent, 1 * COUNTS_PER_INCH);
-    turn_counterclockwise(15, COUNTS_PER_DEGREE * 15);
+    turn_counterclockwise(15, COUNTS_PER_DEGREE * 47);
+    move_forward(left_motor_percent, right_motor_percent, 2 * COUNTS_PER_INCH);
+    turn_counterclockwise(15, COUNTS_PER_DEGREE * 13);
     move_forward(left_motor_percent, right_motor_percent, 2 * COUNTS_PER_INCH);
 }
 void SpinBin()
 {
-    robot_arm.SetDegree(30);
+    robot_arm.SetDegree(0);
     Sleep(1.5);
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < 4; i++)
     {
         robot_arm.SetDegree(105);
         Sleep(1.0);
-        move_backward(left_motor_percent, right_motor_percent, 5 * COUNTS_PER_INCH);
+        move_backward(left_motor_percent, right_motor_percent, 3 * COUNTS_PER_INCH);
         Sleep(1.0);
-        robot_arm.SetDegree(30);
+        robot_arm.SetDegree(0);
         Sleep(1.0);
-        move_forward(left_motor_percent, right_motor_percent, 5 * COUNTS_PER_INCH);
+        move_forward(left_motor_percent, right_motor_percent, 3 * COUNTS_PER_INCH);
         Sleep(1.0);
     }
     robot_arm.SetDegree(0);
-    move_backward(left_motor_percent, right_motor_percent, 5 * COUNTS_PER_INCH);
+    move_backward(left_motor_percent, right_motor_percent, 3 * COUNTS_PER_INCH);
     turn_clockwise(15, COUNTS_PER_DEGREE * 45);
     move_backward(left_motor_percent, right_motor_percent, 1 * COUNTS_PER_INCH);
     turn_clockwise(15, COUNTS_PER_DEGREE * 15);
