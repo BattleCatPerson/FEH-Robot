@@ -7,7 +7,14 @@
 
 #define COUNTS_PER_INCH 33.74
 #define COUNTS_PER_DEGREE 2.067
-
+// Defines for pulsing the robot
+#define PULSE_TIME 0.05
+#define PULSE_POWER 25
+// Orientation of AruCo Code
+#define PLUS 0
+#define MINUS 1
+// RCS Delay time
+#define RCS_WAIT_TIME_IN_SEC 0.35
 DigitalEncoder right_encoder(FEHIO::Pin12);
 DigitalEncoder left_encoder(FEHIO::Pin14);
 FEHMotor right_motor(FEHMotor::Motor1, 9.0);
@@ -82,6 +89,130 @@ void turn_clockwise(int percent, int counts)
     right_motor.Stop();
     left_motor.Stop();
 }
+void pulse_forward(int percent, float seconds)
+{
+    // Set both motors to desired percent
+    right_motor.SetPercent(-percent);
+    left_motor.SetPercent(percent);
+
+    // Wait for the correct number of seconds
+    Sleep(seconds);
+
+    // Turn off motors
+    right_motor.Stop();
+    left_motor.Stop();
+}
+/*
+ * Use RCS to move to the desired x_coordinate based on the orientation of the AruCo code
+ */
+void check_x(float x_coordinate, int orientation)
+{
+    // Determine the direction of the motors based on the orientation of the AruCo code
+    int power = PULSE_POWER;
+    if (orientation == MINUS)
+    {
+        power = -PULSE_POWER;
+    }
+
+    RCSPose *pose = RCS.RequestPosition();
+
+    // Check if receiving proper RCS coordinates and whether the robot is within an acceptable range
+    for (int i = 0; i < 10; i++)
+    {
+        if (pose->x >= 0 && (pose->x < x_coordinate - 1 || pose->x > x_coordinate + 1))
+        {
+            if (pose->x < x_coordinate + 1)
+            {
+                // Pulse the motors for a short duration in the correct direction
+                pulse_forward(power, PULSE_TIME);
+            }
+            else if (pose->x > x_coordinate - 1)
+            {
+                // Pulse the motors for a short duration in the correct direction
+                pulse_forward(-power, PULSE_TIME);
+            }
+            Sleep(RCS_WAIT_TIME_IN_SEC);
+
+            pose = RCS.RequestPosition();
+        }
+    }
+}
+
+/*
+ * Use RCS to move to the desired y_coordinate based on the orientation of the QR code
+ */
+void check_y(float y_coordinate, int orientation)
+{
+    // Determine the direction of the motors based on the orientation of the QR code
+    int power = PULSE_POWER;
+    if (orientation == MINUS)
+    {
+        power = -PULSE_POWER;
+    }
+
+    RCSPose *pose = RCS.RequestPosition();
+
+    // Check if receiving proper RCS coordinates and whether the robot is within an acceptable range
+    for (int i = 0; i < 10; i++)
+    {
+        if (pose->y >= 0 && (pose->y < y_coordinate - 1 || pose->y > y_coordinate + 1))
+        {
+            if (pose->y < y_coordinate + 1)
+            {
+                // Pulse the motors for a short duration in the correct direction
+                pulse_forward(power, PULSE_TIME);
+            }
+            else if (pose->y > y_coordinate - 1)
+            {
+                // Pulse the motors for a short duration in the correct direction
+                pulse_forward(-power, PULSE_TIME);
+            }
+            Sleep(RCS_WAIT_TIME_IN_SEC);
+
+            pose = RCS.RequestPosition();
+        }
+    }
+}
+void check_heading(float heading)
+{
+    // You will need to fill out this one yourself and take into account
+    // checking for proper RCS data and the edge conditions
+    //(when you want the robot to go to 0 degrees or close to 0 degrees)
+
+    /*
+        SUGGESTED ALGORITHM:
+        1. Check the current orientation of the QR code and the desired orientation of the QR code
+        2. Check if the robot is within the desired threshold for the heading based on the orientation
+        3. Pulse in the correct direction based on the orientation
+    */
+    RCSPose *pose = RCS.RequestPosition();
+    while (pose->heading >= 0 && (pose->heading < heading - 2 || pose->heading > heading + 2))
+    {
+        float headingDifference = heading - pose->heading;
+        if (headingDifference > 180)
+            headingDifference -= 360;
+        if (headingDifference < -180)
+            headingDifference += 360;
+        if (headingDifference > 0)
+        {
+            // CCW
+            right_motor.SetPercent(-PULSE_POWER);
+            left_motor.SetPercent(-PULSE_POWER);
+        }
+        else if (headingDifference <= 0)
+        {
+            // CW
+            right_motor.SetPercent(PULSE_POWER);
+            left_motor.SetPercent(PULSE_POWER);
+        }
+        Sleep(PULSE_TIME);
+        right_motor.Stop();
+        left_motor.Stop();
+        Sleep(RCS_WAIT_TIME_IN_SEC);
+
+        pose = RCS.RequestPosition();
+    }
+}
 float left_motor_percent = 25;
 float right_motor_percent = 25; // Input power level here
 float no_light = 2.75;
@@ -95,6 +226,9 @@ int servo_max = 2500;
 int servo_min = 500;
 int turn_max = 2500;
 int turn_min = 500;
+float blue_light = .85;
+float light_degrees = 10;
+float to_humidifier_button = 6;
 
 void PressButton()
 {
@@ -154,11 +288,17 @@ void ToBucket()
     // move_backward(left_motor_percent, right_motor_percent, (to_bucket_two + to_bucket_two_two + to_bucket_three) * COUNTS_PER_INCH / fuck_up_divider);
     // turn_clockwise(25, COUNTS_PER_DEGREE * 90 / fuck_up_divider);
     move_forward(left_motor_percent, right_motor_percent, 22 * COUNTS_PER_INCH);
-    turn_counterclockwise(25, COUNTS_PER_DEGREE * 47);
+    // turn_counterclockwise(25, COUNTS_PER_DEGREE * 47);
+    turn_clockwise(20, COUNTS_PER_DEGREE * 45);
+    check_heading(270);
+    check_y(20.8, PLUS);
+    turn_counterclockwise(20, COUNTS_PER_DEGREE * 90);
+    check_heading(0);
     move_backward(left_motor_percent, right_motor_percent, 5 * COUNTS_PER_INCH);
+    check_x(17.69, MINUS);
     robot_arm.SetDegree(65);
     Sleep(2.0);
-    move_forward(left_motor_percent, right_motor_percent, 7);
+    move_forward(left_motor_percent, right_motor_percent, 9 * COUNTS_PER_INCH);
     robot_arm.SetDegree(55);
     Sleep(0.5);
     robot_arm.SetDegree(45);
@@ -218,29 +358,72 @@ void Bucket()
     UpRamp();
     DropBucket();
 }
-void Lever() 
-{    
+void Lever()
+{
     int lever = RCS.GetLever();
-    if (lever == 0) 
+    if (lever == 0)
     {
-
+        // tilt left
     }
-    else if (lever == 1) 
+    else if (lever == 1)
     {
-
+        // go straight
     }
     else
     {
-
+        // tilt right
     }
+    // press lever
+    // move back
+    // lower arm
+    // pull lever up
+    // go back to spawn point
 }
 void Humidifier()
 {
+    // turn 45 left
+    // go straight
+    // read light
+    // if blue hit button
+    // otherwise hit button
+    bool isRed = false;
+    Sleep(1.0);
+    if (cds.Value() <= blue_light)
+    {
+        isRed = true;
+    }
+    if (isRed)
+    {
+        LCD.WriteLine("RED");
+    }
+    else
+    {
+        LCD.WriteLine("BLUE!");
+    }
+    LCD.WriteLine(cds.Value());
 
+    // turn towards the correct light
+    if (!isRed)
+    {
+        turn_counterclockwise(light_degrees, COUNTS_PER_DEGREE * 25);
+        move_forward(left_motor_percent, right_motor_percent, 4 * COUNTS_PER_INCH);
+        turn_clockwise(light_degrees, COUNTS_PER_DEGREE * 25);
+    }
+    else
+    {
+        turn_clockwise(light_degrees, COUNTS_PER_DEGREE * 25);
+        move_forward(left_motor_percent, right_motor_percent, 4 * COUNTS_PER_INCH);
+        turn_counterclockwise(light_degrees, COUNTS_PER_DEGREE * 25);
+    }
+    // move forward into the light
+    move_forward(left_motor_percent, right_motor_percent, to_humidifier_button * COUNTS_PER_INCH);
 }
 void Window()
 {
-    
+    //
+}
+void DownRamp()
+{
 }
 void ERCMain()
 {
@@ -266,13 +449,17 @@ void ERCMain()
     robot_arm.SetMin(servo_min);
     robot_arm.SetDegree(0);
     RCS.InitializeTouchMenu("1020C2JUU");
-    WaitForFinalAction();
-    while (cds.Value() > no_light)
-    {
-    }
-    Sleep(1.0);
-    PressButton();
-    CompostBin();
-    Bucket();
+    ToBucket();
+    // WaitForFinalAction();
+    // while (cds.Value() > no_light)
+    // {
+    // }
+    // Sleep(1.0);
+    // PressButton();
+    // CompostBin();
+    // Bucket();
+    // Lever();
+    // Humidifier();
+    // Window();
     // if left lower than right increase left speed by .0001
 }

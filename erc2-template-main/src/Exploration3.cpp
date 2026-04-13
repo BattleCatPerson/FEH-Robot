@@ -11,7 +11,7 @@
 //     int touch_x, touch_y;
 //     // Loop n through points to record necessary positions.
 //     int n;
-//     char points[4] = {'A', 'B', 'C', 'D'};
+//     char points[7][20] = {"To Bin", "To Bucket", "Up Ramp", "Central", "Crate", "Levers", "Button"};
 
 //     // Disable RCS position rate limiting to allow for more
 //     // frequent position updates (testing only, won't work during competition)
@@ -22,7 +22,7 @@
 //     //     This matches the AruCo code that is provided for this exploration.
 //     // If your team wishes to use RCS's positioning system going forward,
 //     //     please use the 8 digit code on your team's page on the store website.
-//     RCS.InitializeTouchMenu("Z1TESTING");
+//     RCS.InitializeTouchMenu("1020C2JUU");
 
 //     // Open SD file for writing
 //     FEHFile *fptr = SD.FOpen("test.txt", "w");
@@ -36,7 +36,7 @@
 //     LCD.Clear();
 
 //     // Step through each path point (A,B,C,D) to record position and heading
-//     for (n = 0; n <= 3; n++)
+//     for (n = 0; n <= 6; n++)
 //     {
 //         LCD.Clear();
 //         LCD.WriteRC("Touch to set point ", 0, 0);
