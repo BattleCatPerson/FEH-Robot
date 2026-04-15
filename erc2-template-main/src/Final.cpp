@@ -241,7 +241,7 @@ void PressButton()
 }
 void ToBin()
 {
-    turn_counterclockwise(15, COUNTS_PER_DEGREE * 50);
+    turn_counterclockwise(15, COUNTS_PER_DEGREE * 53);
     move_forward(left_motor_percent, right_motor_percent, 4.5 * COUNTS_PER_INCH);
 }
 void SpinBin()
@@ -289,7 +289,7 @@ void ToBucket()
     // turn_counterclockwise(25, COUNTS_PER_DEGREE * 47);
     check_y(23, PLUS);
     turn_counterclockwise(20, COUNTS_PER_DEGREE * 95);
-    check_heading(0);
+    check_heading(2);
     move_backward(left_motor_percent, right_motor_percent, 2 * COUNTS_PER_INCH);
     check_x(17.69, MINUS);
     robot_arm.SetDegree(65);
@@ -322,12 +322,12 @@ void UpRamp()
     move_backward(left_motor_percent, right_motor_percent, 12 * COUNTS_PER_INCH);
     turn_clockwise(25, 95 * COUNTS_PER_DEGREE);
     check_heading(180);
-    move_forward(left_motor_percent, right_motor_percent, 10 * COUNTS_PER_INCH);
+    move_forward(left_motor_percent, right_motor_percent, 14 * COUNTS_PER_INCH);
     // check_x(31.9, PLUS);
     check_x(37, PLUS);
     turn_counterclockwise(25, 95 * COUNTS_PER_DEGREE);
     check_heading(270);
-    move_forward(left_motor_percent, right_motor_percent, 40 * COUNTS_PER_INCH);
+    move_forward(left_motor_percent, right_motor_percent, 35 * COUNTS_PER_INCH);
     // move_forward(left_motor_percent + 2, right_motor_percent, 20 * COUNTS_PER_INCH);
     // move_forward(left_motor_percent + 3, right_motor_percent, 20 * COUNTS_PER_INCH);
     check_y(51.5, PLUS);
@@ -346,17 +346,17 @@ void DropBucket()
     robot_arm.SetDegree(20); // lower arm
     Sleep(0.5);
     robot_arm.SetDegree(30); // lower arm
+    // Sleep(0.5);
+    // robot_arm.SetDegree(40); // lower arm
+    // Sleep(0.5);
+    // robot_arm.SetDegree(50); // lower arm
+    // Sleep(0.5);
+    // robot_arm.SetDegree(60); // lower arm
+    // Sleep(0.5);
+    // robot_arm.SetDegree(65); // lower arm
     Sleep(0.5);
-    robot_arm.SetDegree(40); // lower arm
-    Sleep(0.5);
-    robot_arm.SetDegree(50); // lower arm
-    Sleep(0.5);
-    robot_arm.SetDegree(60); // lower arm
-    Sleep(0.5);
-    robot_arm.SetDegree(65); // lower arm
-    Sleep(0.5);
-    move_backward(left_motor_percent, right_motor_percent, 8 * COUNTS_PER_INCH);
-    turn_counterclockwise(25, COUNTS_PER_DEGREE * 45);
+    // move_backward(left_motor_percent, right_motor_percent, 8 * COUNTS_PER_INCH);
+    // turn_counterclockwise(25, COUNTS_PER_DEGREE * 45);
     robot_arm.SetDegree(0);
 }
 void Bucket()
