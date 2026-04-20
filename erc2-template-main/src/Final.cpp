@@ -29,7 +29,6 @@ void move_forward(float lpercent, float rpercent, int counts)
     right_encoder.ResetCounts();
     left_encoder.ResetCounts();
     right_motor.SetPercent(-rpercent);
-    Sleep(150);
     right_encoder.ResetCounts();
     left_motor.SetPercent(lpercent);
     while ((left_encoder.Counts() + right_encoder.Counts()) / 2. < counts)
@@ -53,7 +52,6 @@ void move_backward(float lpercent, float rpercent, int counts)
     right_encoder.ResetCounts();
     left_encoder.ResetCounts();
     right_motor.SetPercent(rpercent);
-    Sleep(150);
     right_encoder.ResetCounts();
     left_motor.SetPercent(-lpercent);
     while ((left_encoder.Counts() + right_encoder.Counts()) / 2. < counts)
@@ -220,7 +218,7 @@ void check_heading(float heading)
         count++;
     }
 }
-float left_motor_percent = 25;
+float left_motor_percent = 26;
 float right_motor_percent = 25; // Input power level here
 float no_light = 2.75;
 float fuck_up_divider = 2;
@@ -245,7 +243,7 @@ void PressButton()
 }
 void ToBin()
 {
-    turn_counterclockwise(15, COUNTS_PER_DEGREE * 57);
+    turn_counterclockwise(15, COUNTS_PER_DEGREE * 50);
     move_forward(left_motor_percent, right_motor_percent, 3.5 * COUNTS_PER_INCH);
 }
 void SpinBin()
@@ -293,7 +291,7 @@ void ToBucket()
     // turn_counterclockwise(25, COUNTS_PER_DEGREE * 47);
     check_y(20.5, PLUS);
     turn_counterclockwise(20, COUNTS_PER_DEGREE * 97);
-    // check_heading(357);
+    check_heading(0);
     // move_backward(left_motor_percent, right_motor_percent, 2 * COUNTS_PER_INCH);
     check_x(17.69, MINUS);
     robot_arm.SetDegree(65);
