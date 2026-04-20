@@ -16,9 +16,9 @@
 // RCS Delay time
 #define RCS_WAIT_TIME_IN_SEC 0.35
 DigitalEncoder right_encoder(FEHIO::Pin12);
-DigitalEncoder left_encoder(FEHIO::Pin14);
-FEHMotor right_motor(FEHMotor::Motor1, 9.0);
-FEHMotor left_motor(FEHMotor::Motor0, 9.0);
+DigitalEncoder left_encoder(FEHIO::Pin9);
+FEHMotor right_motor(FEHMotor::Motor0, 9.0);
+FEHMotor left_motor(FEHMotor::Motor2, 9.0);
 AnalogInputPin cds(FEHIO::Pin0);
 FEHServo robot_arm(FEHServo::Servo7);
 FEHServo turntable_arm(FEHServo::Servo6);
@@ -33,16 +33,16 @@ void move_forward(float lpercent, float rpercent, int counts)
     left_motor.SetPercent(lpercent);
     while ((left_encoder.Counts() + right_encoder.Counts()) / 2. < counts)
     {
-        // if (left_encoder.Counts() < right_encoder.Counts() - 2)
-        // {
-        //     lpercent += 0.002;
-        // }
-        // else if (right_encoder.Counts() < left_encoder.Counts() - 2)
-        // {
-        //     rpercent += 0.002;
-        // }
-        // right_motor.SetPercent(-rpercent);
-        // left_motor.SetPercent(lpercent);
+        if (left_encoder.Counts() < right_encoder.Counts())
+        {
+            lpercent += 0.0001;
+        }
+        else if (right_encoder.Counts() < left_encoder.Counts())
+        {
+            rpercent += 0.0001;
+        }
+        right_motor.SetPercent(-rpercent);
+        left_motor.SetPercent(lpercent);
     };
     right_motor.Stop();
     left_motor.Stop();
@@ -56,16 +56,16 @@ void move_backward(float lpercent, float rpercent, int counts)
     left_motor.SetPercent(-lpercent);
     while ((left_encoder.Counts() + right_encoder.Counts()) / 2. < counts)
     {
-        // if (left_encoder.Counts() < right_encoder.Counts() - 2)
-        // {
-        //     lpercent += 0.002;
-        // }
-        // else if (right_encoder.Counts() < left_encoder.Counts() - 2)
-        // {
-        //     rpercent += 0.002;
-        // }
-        // right_motor.SetPercent(rpercent);
-        // left_motor.SetPercent(-lpercent);
+        if (left_encoder.Counts() < right_encoder.Counts())
+        {
+            lpercent += 0.0001;
+        }
+        else if (right_encoder.Counts() < left_encoder.Counts())
+        {
+            rpercent += 0.0001;
+        }
+        right_motor.SetPercent(rpercent);
+        left_motor.SetPercent(-lpercent);
     };
     right_motor.Stop();
     left_motor.Stop();
@@ -218,11 +218,11 @@ void check_heading(float heading)
         count++;
     }
 }
-float left_motor_percent = 26;
-float right_motor_percent = 25; // Input power level here
+float left_motor_percent = 30;
+float right_motor_percent = 30; // Input power level herepoiomoiomomokm
 float no_light = 2.75;
 float fuck_up_divider = 2;
-float final_button = 3;
+float final_button = 2;
 float final_button_back = 2;
 float diagonal = 19;
 float back_bin = 18;
@@ -243,8 +243,8 @@ void PressButton()
 }
 void ToBin()
 {
-    turn_counterclockwise(15, COUNTS_PER_DEGREE * 50);
-    move_forward(left_motor_percent, right_motor_percent, 3.5 * COUNTS_PER_INCH);
+    turn_counterclockwise(15, COUNTS_PER_DEGREE * 51);
+    move_forward(left_motor_percent, right_motor_percent, 4.25 * COUNTS_PER_INCH);
 }
 void SpinBin()
 {
@@ -260,6 +260,7 @@ void SpinBin()
         Sleep(1.0);
         move_forward(left_motor_percent, right_motor_percent, 3 * COUNTS_PER_INCH);
         Sleep(1.0);
+        turn_counterclockwise(15, COUNTS_PER_DEGREE * 2);
     }
     robot_arm.SetDegree(0);
     move_forward(left_motor_percent, right_motor_percent, 4 * COUNTS_PER_INCH);
@@ -287,9 +288,9 @@ void ToBucket()
     // Sleep(2.0);
     // move_backward(left_motor_percent, right_motor_percent, (to_bucket_two + to_bucket_two_two + to_bucket_three) * COUNTS_PER_INCH / fuck_up_divider);
     // turn_clockwise(25, COUNTS_PER_DEGREE * 90 / fuck_up_divider);
-    move_forward(left_motor_percent, right_motor_percent, 15 * COUNTS_PER_INCH);
+    move_forward(left_motor_percent, right_motor_percent, 14.5 * COUNTS_PER_INCH);
     // turn_counterclockwise(25, COUNTS_PER_DEGREE * 47);
-    check_y(20.5, PLUS);
+    check_y(21, PLUS);
     turn_counterclockwise(20, COUNTS_PER_DEGREE * 97);
     check_heading(0);
     // move_backward(left_motor_percent, right_motor_percent, 2 * COUNTS_PER_INCH);
@@ -329,8 +330,10 @@ void UpRamp()
     check_x(34, PLUS);
     turn_counterclockwise(25, 97 * COUNTS_PER_DEGREE);
     check_heading(270);
-    move_forward(left_motor_percent + 5, right_motor_percent, 25 * COUNTS_PER_INCH);
-    move_forward(left_motor_percent, right_motor_percent, 10 * COUNTS_PER_INCH);
+    move_forward(left_motor_percent + 5, right_motor_percent + 5, 5 * COUNTS_PER_INCH);
+    move_forward(left_motor_percent + 12, right_motor_percent + 10, 17 * COUNTS_PER_INCH);
+    // move_forward(left_motor_percent, right_motor_percent, 6 * COUNTS_PER_INCH);
+    move_forward(left_motor_percent, right_motor_percent, 15 * COUNTS_PER_INCH);
     check_heading(270);
     // move_forward(left_motor_percent + 2, right_motor_percent, 20 * COUNTS_PER_INCH);
     // move_forward(left_motor_percent + 3, right_motor_percent, 20 * COUNTS_PER_INCH);
@@ -363,7 +366,7 @@ void DropBucket()
     // Sleep(0.5);
     // robot_arm.SetDegree(65); // lower arm
     Sleep(0.5);
-    move_backward(left_motor_percent, right_motor_percent, 6 * COUNTS_PER_INCH);
+    move_backward(left_motor_percent, right_motor_percent, 5 * COUNTS_PER_INCH);
     // turn_counterclockwise(25, COUNTS_PER_DEGREE * 45);
     robot_arm.SetDegree(0);
 }
@@ -423,19 +426,19 @@ void Humidifier()
     if (!isRed)
     {
         turn_counterclockwise(15, COUNTS_PER_DEGREE * 20);
-        move_forward(left_motor_percent, right_motor_percent, 5 * COUNTS_PER_INCH);
+        move_forward(left_motor_percent, right_motor_percent, 7 * COUNTS_PER_INCH);
         // turn_clockwise(15, COUNTS_PER_DEGREE * 20);
     }
     else
     {
         turn_clockwise(15, COUNTS_PER_DEGREE * 20);
-        move_forward(left_motor_percent, right_motor_percent, 5 * COUNTS_PER_INCH);
+        move_forward(left_motor_percent, right_motor_percent, 7 * COUNTS_PER_INCH);
         // turn_counterclockwise(15, COUNTS_PER_DEGREE * 20);
     }
     // move forward into the light
     // move_forward(left_motor_percent, right_motor_percent, 3 * COUNTS_PER_INCH);
     // Sleep(1.0);
-    move_backward(left_motor_percent, right_motor_percent, 5 * COUNTS_PER_INCH);
+    move_backward(left_motor_percent, right_motor_percent, 7 * COUNTS_PER_INCH);
     // unrotate
     if (!isRed)
     {
@@ -453,7 +456,7 @@ void Humidifier()
 }
 void Lever()
 {
-    move_forward(left_motor_percent, right_motor_percent, 6 * COUNTS_PER_INCH);
+    move_forward(left_motor_percent, right_motor_percent, 5 * COUNTS_PER_INCH);
     check_y(58, PLUS);
     turn_counterclockwise(15, 49 * COUNTS_PER_DEGREE);
     // check_heading(180);
@@ -470,7 +473,7 @@ void Lever()
     // else if (lever == 1)
     // {
     // go straight
-    move_forward(left_motor_percent, right_motor_percent, 2 * COUNTS_PER_INCH);
+    // move_forward(left_motor_percent, right_motor_percent, 1 * COUNTS_PER_INCH);
     // }
     // else
     // {
@@ -484,7 +487,7 @@ void Lever()
     robot_arm.SetDegree(110);
     move_forward(left_motor_percent, right_motor_percent, 3 * COUNTS_PER_INCH);
     Sleep(3.0);
-    robot_arm.SetDegree(0);
+    robot_arm.SetDegree(40);
     // if (lever == 0)
     // {
     // turn_clockwise(15, 45 * COUNTS_PER_DEGREE);
@@ -501,7 +504,8 @@ void Lever()
 }
 void DownRamp()
 {
-    move_backward(left_motor_percent, right_motor_percent, 18 * COUNTS_PER_INCH);
+    move_backward(left_motor_percent, right_motor_percent, 15 * COUNTS_PER_INCH);
+    robot_arm.SetDegree(0);
     turn_clockwise(15, 49 * COUNTS_PER_DEGREE);
     check_heading(270);
     move_backward(left_motor_percent, right_motor_percent, 40 * COUNTS_PER_INCH);
