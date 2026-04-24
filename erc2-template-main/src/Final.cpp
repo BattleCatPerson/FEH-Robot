@@ -299,7 +299,7 @@ void ToBucket()
     check_heading(0);
     // move_backward(left_motor_percent, right_motor_percent, 2 * COUNTS_PER_INCH);
     check_x(17.69, MINUS);
-    robot_arm.SetDegree(62);
+    robot_arm.SetDegree(61);
     Sleep(2.0);
     move_forward(left_motor_percent - 10, right_motor_percent - 10, 4.25 * COUNTS_PER_INCH);
     robot_arm.SetDegree(55);
@@ -331,7 +331,8 @@ void UpRamp()
     // check_heading(180);
     move_forward(left_motor_percent, right_motor_percent, 12.5 * COUNTS_PER_INCH);
     // check_x(31.9, PLUS);
-    check_x(34, PLUS);
+    // check_x(34, PLUS);
+    check_x(33.5, PLUS);
     turn_counterclockwise(25, 97 * COUNTS_PER_DEGREE);
     check_heading(270);
     move_forward(left_motor_percent + 5, right_motor_percent + 5, 5 * COUNTS_PER_INCH);
@@ -417,7 +418,7 @@ void Humidifier()
     check_x(13.11, MINUS);
     bool isRed = false;
     Sleep(1.0);
-    if (cds.Value() <= blue_light - .25)
+    if (cds.Value() <= blue_light - .35)
     {
         isRed = true;
     }
@@ -434,12 +435,12 @@ void Humidifier()
     // turn towards the correct light
     if (!isRed)
     {
-        turn_counterclockwise(15, COUNTS_PER_DEGREE * 18 + 2);
+        turn_counterclockwise(15, COUNTS_PER_DEGREE * 18 + 4);
         // turn_clockwise(15, COUNTS_PER_DEGREE * 20);
     }
     else
     {
-        turn_clockwise(15, COUNTS_PER_DEGREE * 16 + 2);
+        turn_clockwise(15, COUNTS_PER_DEGREE * 16 + 4);
         // turn_counterclockwise(15, COUNTS_PER_DEGREE * 20);
     }
     move_forward(left_motor_percent, right_motor_percent, 5.5 * COUNTS_PER_INCH);
@@ -452,13 +453,13 @@ void Humidifier()
     {
         // turn_counterclockwise(15, COUNTS_PER_DEGREE * 20);
         // move_backward(left_motor_percent, right_motor_percent, 5 * COUNTS_PER_INCH);
-        turn_clockwise(15, COUNTS_PER_DEGREE * 18 + 2);
+        turn_clockwise(15, COUNTS_PER_DEGREE * 18 + 4);
     }
     else
     {
         // turn_clockwise(15, COUNTS_PER_DEGREE * 20);
         // move_backward(left_motor_percent, right_motor_percent, 3 * COUNTS_PER_INCH);
-        turn_counterclockwise(15, COUNTS_PER_DEGREE * 16 + 2);
+        turn_counterclockwise(15, COUNTS_PER_DEGREE * 16 + 4);
     }
     turn_clockwise(15, COUNTS_PER_DEGREE * 95);
     check_heading(270);
@@ -516,7 +517,7 @@ void Lever()
 }
 void DownRamp()
 {
-    move_backward(left_motor_percent, right_motor_percent, 19 * COUNTS_PER_INCH);
+    move_backward(left_motor_percent, right_motor_percent, 18 * COUNTS_PER_INCH);
     robot_arm.SetDegree(0);
     turn_clockwise(15, 49 * COUNTS_PER_DEGREE);
     check_heading(270);
